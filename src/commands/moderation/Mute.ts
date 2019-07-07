@@ -14,7 +14,7 @@ export default class MuteCommand extends Command {
             usage: '<user> [--reason] [--time]',
             aliases: ['slience'],
             category: 'Moderation',
-            userpermissions: Constants.Permissions.manageRoles | Constants.Permissions.manageChannels,
+            userpermissions: Constants.Permissions.manageRoles,
             botpermissions: Constants.Permissions.manageRoles | Constants.Permissions.manageChannels
         });
     }
