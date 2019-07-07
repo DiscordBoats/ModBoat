@@ -27,7 +27,7 @@ export default class AutoModBadWords {
         const guild = channel.guild;
         const me = guild.members.get(this.client.user.id)!;
         
-        if (!PermissionUtils.above(me, m.member!) || !channel.permissionsOf(me.id).has('manageMessages')) // TODO: add permission checks. I will need to figure out those!
+        if (channel.permissionsOf(m.member!.id).has('manageMessages')) // TODO: add permission checks. I will need to figure out those!
             return false;
         const settings = await this.client.settings.get(guild.id);
     
