@@ -56,8 +56,8 @@ export default class NinoClient extends Client {
     public cases: CaseSettings = new CaseSettings();
     public timeouts: TimeoutsManager;
     public webhook?: WebhookClient;
-    // LIST: August, Dondish, Kyle, Derpy, Wessel
-    public owners: string[] = ['280158289667555328', '239790360728043520', '130442810456408064', '145557815287611393', '107130754189766656'];
+    // LIST: Dondish, MrSheldon, untocodes
+    public owners: string[] = ['239790360728043520', '231733082804322304', '386941684723744768'];
     public stats: CommandStats = {
         commandsExecuted: 0,
         messagesSeen: 0,
