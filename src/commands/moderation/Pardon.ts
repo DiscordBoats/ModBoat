@@ -13,7 +13,7 @@ export default class PardonCommand extends Command {
             usage: '<user> <amount>',
             aliases: ['unwarn', 'forgive'],
             category: 'Moderation',
-            userpermissions: Constants.Permissions.manageRoles | Constants.Permissions.manageChannels
+            userpermissions: Constants.Permissions.manageRoles
         });
     }
 

@@ -14,7 +14,7 @@ export default class WarningsCommand extends Command {
             usage: '<user>',
             aliases: ['warns'],
             category: 'Moderation',
-            userpermissions: Constants.Permissions.manageRoles | Constants.Permissions.manageChannels
+            userpermissions: Constants.Permissions.manageRoles
         });
     }
 
