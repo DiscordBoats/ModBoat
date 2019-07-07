@@ -10,8 +10,8 @@ export default class ReadyEvent extends Event {
     async emit() {
         this.client.logger.discord(`Logged in as ${this.client.user.username}#${this.client.user.discriminator} (${this.client.user.id})`);
         this.client.editStatus('online', {
-            name: 'Watching the members...',
-            type: 0
+            name: 'Members',
+            type: 3
         });
         
         this.client.timeouts.reapplyTimeouts();
