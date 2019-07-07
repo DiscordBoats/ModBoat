@@ -285,7 +285,7 @@ export default class PunishmentManager {
             "unmute": 0xfff00
         }[type];
         let suffix;
-        if (type === 'ban')
+        if (type === 'ban' || type === 'unban')
             suffix = 'ned';
         else if (type.endsWith('e'))
             suffix = 'd';
