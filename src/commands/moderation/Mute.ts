@@ -33,6 +33,9 @@ export default class MuteCommand extends Command {
 
         if (!PermissionUtils.above(ctx.message.member!, member))
             return ctx.send('The user is above you in the heirarchy.')
+        
+        if (!PermissionUtils.above(ctx.me, member))
+            return ctx.send('The user is above me in the heirarchy.')
 
         let reason = (ctx.flags.get('reason') || ctx.flags.get('r'));
         if (typeof reason === 'boolean') return ctx.send('You will need to specify a reason');

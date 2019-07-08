@@ -35,6 +35,9 @@ export default class PardonCommand extends Command {
         if (!PermissionUtils.above(ctx.message.member!, member))
             return ctx.send('The user is above you in the heirarchy.')
 
+        if (!PermissionUtils.above(ctx.me, member))
+            return ctx.send('The user is above me in the heirarchy.')
+
         await this.client.punishments.pardon(member!, amount);
         const warns = await this.client.warnings.get(ctx.guild.id, member.id);
         if (!warns)
