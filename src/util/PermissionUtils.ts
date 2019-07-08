@@ -10,7 +10,7 @@ export default class PermissionUtils {
      * @param member the member
      */
     public static topRole(member: Member): Role | undefined {
-        return member.guild.roles.get(member.roles[member.roles.length-1]);
+        return member.guild.roles.get(member.roles[0]);
     }
 
     /**

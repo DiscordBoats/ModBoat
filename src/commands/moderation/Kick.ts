@@ -4,6 +4,7 @@ import NinoClient from '../../structures/Client';
 import findUser from '../../util/UserUtil';
 import Command from '../../structures/Command';
 import Context from '../../structures/Context';
+import PermissionUtils from '../../util/PermissionUtils';
 
 export default class KickCommand extends Command {
     constructor(client: NinoClient) {
@@ -29,6 +30,9 @@ export default class KickCommand extends Command {
         const member = ctx.guild.members.get(u.id);
 
         if (!member || member === null) return ctx.send(`User \`${u.username}#${u.discriminator}\` is not in this guild?`);
+        
+        if (!PermissionUtils.above(ctx.message.member!, member))
+            return ctx.send('The user is above you in the heirarchy.')
 
         let reason = (ctx.flags.get('reason') || ctx.flags.get('r'));
         if (typeof reason === 'boolean') return ctx.send('You will need to specify a reason');

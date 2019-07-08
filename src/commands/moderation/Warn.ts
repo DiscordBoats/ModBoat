@@ -5,6 +5,7 @@ import findUser from '../../util/UserUtil';
 import Command from '../../structures/Command';
 import Context from '../../structures/Context';
 import ms = require('ms');
+import PermissionUtils from '../../util/PermissionUtils';
 
 export default class WarnCommand extends Command {
     constructor(client: NinoClient) {
@@ -28,6 +29,9 @@ export default class WarnCommand extends Command {
         const member = ctx.guild.members.get(u.id);
 
         if (!member) return ctx.send(`User \`${u.username}#${u.discriminator}\` is not in this guild?`);
+
+        if (!PermissionUtils.above(ctx.message.member!, member))
+            return ctx.send('The user is above you in the heirarchy.')
 
         const punishments = await this.client.punishments.addWarning(member!);
         for (let i of punishments) {

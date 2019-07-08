@@ -4,6 +4,7 @@ import NinoClient from '../../structures/Client';
 import { findId } from '../../util/UserUtil';
 import Command from '../../structures/Command';
 import Context from '../../structures/Context';
+import PermissionUtils from '../../util/PermissionUtils';
 
 export default class UnbanCommand extends Command {
     constructor(client: NinoClient) {
