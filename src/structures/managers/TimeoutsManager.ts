@@ -39,7 +39,6 @@ export default class TimeoutsManager {
         const timedates = await this.client.redis.keys('Timeout:*:*:*');
         for (let timedate of timedates) {
             const value = await this.client.redis.get(timedate);
-            this.client.logger.info(value!.split(':'))
             const start = Number(value!.split(':')[0]);
             const amount = Number(value!.split(':')[1]);
             const member = value!.split(':')[2];
