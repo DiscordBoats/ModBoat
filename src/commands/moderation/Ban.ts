@@ -1,5 +1,5 @@
 import { Punishment, PunishmentType } from '../../structures/managers/PunishmentManager';
-import { Constants } from 'eris';
+import { Constants, Member, Guild } from 'eris';
 import NinoClient from '../../structures/Client';
 import findUser from '../../util/UserUtil';
 import Command from '../../structures/Command';
@@ -28,16 +28,18 @@ export default class BanCommand extends Command {
         if (!u) {
             return ctx.send('I can\'t find this user!')
         }
-        const member = ctx.guild.members.get(u.id);
-
+        let member: Member | {id: string, guild: Guild} | undefined = ctx.guild.members.get(u.id)
         
-        if (!member || member === null) return ctx.send(`User \`${u.username}#${u.discriminator}\` is not in this guild?`);
+        if (!!member && member instanceof Member) {
+            if (!PermissionUtils.above(ctx.message.member!, member))
+                return ctx.send('The user is above you in the heirarchy.')
+    
+            if (!PermissionUtils.above(ctx.me, member))
+                return ctx.send('The user is above me in the heirarchy.')
 
-        if (!PermissionUtils.above(ctx.message.member!, member))
-            return ctx.send('The user is above you in the heirarchy.')
-
-        if (!PermissionUtils.above(ctx.me, member))
-            return ctx.send('The user is above me in the heirarchy.')
+        } else {
+            member = {id: u.id, guild: ctx.guild}
+        }
 
 
         let reason = (ctx.flags.get('reason') || ctx.flags.get('r'));
@@ -47,7 +49,7 @@ export default class BanCommand extends Command {
         if (typeof time === 'boolean') return ctx.send('You will need to specify time to be alloted');
 
         const days = (ctx.flags.get('days') || ctx.flags.get('d'));
-        if (typeof days === 'boolean' || !/[0-9]+/.test(days)) return ctx.send('You need to specify the amount days to delete messages of.')
+        if (!!days && (typeof days === 'boolean' || !/[0-9]+/.test(days))) return ctx.send('You need to specify the amount days to delete messages of.')
         
         const t = !!time ? ms(time) : undefined;
 
