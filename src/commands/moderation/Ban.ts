@@ -1,7 +1,7 @@
 import { Punishment, PunishmentType } from '../../structures/managers/PunishmentManager';
 import { Constants, Member, Guild } from 'eris';
 import NinoClient from '../../structures/Client';
-import findUser from '../../util/UserUtil';
+import findUser, { findId } from '../../util/UserUtil';
 import Command from '../../structures/Command';
 import Context from '../../structures/Context';
 import ms = require('ms');
@@ -24,11 +24,11 @@ export default class BanCommand extends Command {
     async run(ctx: Context) {
         if (!ctx.args.has(0)) return ctx.send('Sorry but you will need to specify a user.');
 
-        const u = findUser(this.client, ctx.args.get(0))!;
+        const u = findId(this.client, ctx.args.get(0))!;
         if (!u) {
             return ctx.send('I can\'t find this user!')
         }
-        let member: Member | {id: string, guild: Guild} | undefined = ctx.guild.members.get(u.id)
+        let member: Member | {id: string, guild: Guild} | undefined = ctx.guild.members.get(u)
         
         if (!!member && member instanceof Member) {
             if (!PermissionUtils.above(ctx.message.member!, member))
@@ -38,7 +38,7 @@ export default class BanCommand extends Command {
                 return ctx.send('The user is above me in the heirarchy.')
 
         } else {
-            member = {id: u.id, guild: ctx.guild}
+            member = {id: u, guild: ctx.guild}
         }
 
 
