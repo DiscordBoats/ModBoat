@@ -26,7 +26,7 @@ export default class BanCommand extends Command {
 
         const u = findId(this.client, ctx.args.get(0))!;
         if (!u) {
-            return ctx.send('I can\'t find this user!')
+            return ctx.send('Invalid format: <@mention> / <user id>')
         }
         let member: Member | {id: string, guild: Guild} | undefined = ctx.guild.members.get(u)
         

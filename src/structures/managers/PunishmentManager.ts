@@ -144,14 +144,12 @@ export default class PunishmentManager {
 
         switch (punishment.type) {
             case "ban": 
-                if (!(member instanceof Member))
-                    return;
                 const days: number = punishment.options.days ? punishment.options.days : 7;
                 const time = punishment.options.temp;
                 const soft: boolean = !!punishment.options.soft;
-                await member.ban(days, reason);
+                await guild.banMember(member.id, days, reason);
                 if (soft) {
-                    await member.unban(reason);
+                    await guild.unbanMember(member.id, reason);
                 } else if (time !== undefined && time > 0) {
                     await this.client.timeouts.addTimeout(member.id, member.guild, 'unban', time!)
                 }
