@@ -43,7 +43,7 @@ export default class KickCommand extends Command {
         const punishment = new Punishment(PunishmentType.Kick, {
             moderator: ctx.sender
         });
-
+        await ctx.send('User successfully kicked.')
         await this.client.punishments.punish(member!, punishment, (reason as string | undefined));
     }
 }

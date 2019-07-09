@@ -59,7 +59,7 @@ export default class BanCommand extends Command {
             temp: t,
             days: Number(days)
         });
-
+        await ctx.send('User successfully banned.')
         await this.client.punishments.punish(member!, punishment, reason as string | undefined);
     }
 }
