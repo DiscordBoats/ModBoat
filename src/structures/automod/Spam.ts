@@ -34,6 +34,8 @@ export default class AutoModSpam {
         if ((m.channel as TextChannel).permissionsOf(m.member!.id).has('manageMessages'))
             return false;
 
+        if (m.author.bot) return false;
+
         const settings = await this.client.settings.get(guild.id);
         
         if (!settings || !settings.automod.spam) return false;
@@ -44,7 +46,7 @@ export default class AutoModSpam {
         if ((await queue.length()) >= 5) {
             const oldtime = Number.parseInt(await queue.pop());
             
-            if (m.timestamp - oldtime <= 3000) {
+            if (m.timestamp - oldtime <= 2000) {
                 let punishments = await this.client.punishments.addWarning(m.member!);
                 for (let punishment of punishments) {
                     await this.client.punishments.punish(m.member!, punishment, 'Automod');
