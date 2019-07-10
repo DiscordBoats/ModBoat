@@ -30,6 +30,7 @@ export default class AutomodService {
      * @param m the message
      */
     async handle(m: Message): Promise<boolean> {
+        if (m.author.bot) return false;
         return await this.invitehandler.handle(m) || await this.badwordhandler.handle(m) || await this.spamhandler.handle(m);
     }
 }
