@@ -41,6 +41,10 @@ export default class BanCommand extends Command {
             member = {id: u, guild: ctx.guild}
         }
 
+        if ((await ctx.guild.getBans()).filter(x => x.id === member!.id).length > 0) {
+            return ctx.send('User is already banned.')
+        }
+
 
         let reason = (ctx.flags.get('reason') || ctx.flags.get('r'));
         if (typeof reason === 'boolean') return ctx.send('You will need to specify a reason');
@@ -59,6 +63,7 @@ export default class BanCommand extends Command {
             temp: t,
             days: Number(days)
         });
+        
         await ctx.send('User successfully banned.')
         await this.client.punishments.punish(member!, punishment, reason as string | undefined);
     }
