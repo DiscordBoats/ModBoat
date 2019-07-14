@@ -36,7 +36,7 @@ export default class UnmuteCommand extends Command {
         let reason = (ctx.flags.get('reason') || ctx.flags.get('r'));
         if (typeof reason === 'boolean') return ctx.send('You will need to specify a reason');
 
-        await this.client.timeouts.cancelTimeout(member.id, ctx.guild, 'mute');
+        await this.client.timeouts.cancelTimeout(member.id, ctx.guild, 'unmute');
         const punishment = new Punishment(PunishmentType.Unmute, { moderator: ctx.sender });
         await ctx.send('User successfully unmuted.')
         await this.client.punishments.punish(member!, punishment, (reason as string | undefined));
