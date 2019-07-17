@@ -61,8 +61,10 @@ export default class TimeoutsManager {
                 continue;
             
             setTimeout(async () => {
-                await this.client.punishments.punish({id: member, guild}, new Punishment(task as PunishmentType, {moderator: this.client.user}), 'time\'s up');
-                await this.client.redis.del(timedate);
+                if (await this.client.redis.exists(timedate)) {
+                    await this.client.punishments.punish({id: member, guild}, new Punishment(task as PunishmentType, {moderator: this.client.user}), 'time\'s up');
+                    await this.client.redis.del(timedate);
+                }
             }, start - Date.now() + amount);
 
         }
