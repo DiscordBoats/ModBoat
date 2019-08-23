@@ -147,9 +147,9 @@ export default class PunishmentManager {
                 const days: number = punishment.options.days ? punishment.options.days : 7;
                 const time = punishment.options.temp;
                 const soft: boolean = !!punishment.options.soft;
-                await guild.banMember(member.id, days,  reason ? reason.replace(/\r?\n|\r/g, '') : undefined);
+                await guild.banMember(member.id, days, reason ? encodeURI(reason) : undefined);
                 if (soft) {
-                    await guild.unbanMember(member.id,  reason ? reason.replace(/\r?\n|\r/g, '') : undefined);
+                    await guild.unbanMember(member.id,  reason ? encodeURI(reason) : undefined);
                 } else if (time !== undefined && time > 0) {
                     await this.client.timeouts.addTimeout(member.id, member.guild, 'unban', time!)
                 }
@@ -157,7 +157,7 @@ export default class PunishmentManager {
             case "kick":
                 if (!(member instanceof Member))
                     return;
-                await member.kick( reason ? reason.replace(/\r?\n|\r/g, '') : undefined);
+                await member.kick(reason ? encodeURI(reason) : undefined);
                 break;
             case "mute": 
                 if (!(member instanceof Member))
@@ -177,7 +177,7 @@ export default class PunishmentManager {
                     settings!.mutedRole = muterole.id;
                     settings!.save();
                 }
-                await member.addRole(muterole, reason ? reason.replace(/\r?\n|\r/g, '') : undefined);
+                await member.addRole(muterole, reason ? encodeURI(reason) : undefined);
                 if (!!temp) {
                     this.client.timeouts.addTimeout(member.id, guild, 'unmute', temp!);
                 }
@@ -187,7 +187,7 @@ export default class PunishmentManager {
                     return;
                 const role = member.guild.roles.get(punishment.options.roleid!);
                 if (!!role && !!PermissionUtils.topRole(me) && PermissionUtils.topRole(me)!.position > role.position)
-                    await member.addRole(role.id,  reason ? reason.replace(/\r?\n|\r/g, '') : undefined);
+                    await member.addRole(role.id, reason ? encodeURI(reason) : undefined);
                 break;
             case "unmute":
                 let mem: Member | {id: string, guild: Guild} | undefined = member;
@@ -198,18 +198,18 @@ export default class PunishmentManager {
                 const muted = guild.roles.get(settings!.mutedRole);
 
                 if (!!muted && !!(mem! as Member).roles.find(x => x === muted.id)) {
-                    await(mem! as Member).removeRole(muted.id,  reason ? reason.replace(/\r?\n|\r/g, '') : undefined);
+                    await(mem! as Member).removeRole(muted.id, reason ? encodeURI(reason) : undefined);
                 }
                 break;
             case "unban":
                 if (!guild.members.find(x => x.id === member.id)) {
-                    await guild.unbanMember(member.id,  reason ? reason.replace(/\r?\n|\r/g, '') : undefined);
+                    await guild.unbanMember(member.id, reason ? encodeURI(reason) : undefined);
                 }
                 break;
             case "unrole":
                 const srole = member.guild.roles.get(punishment.options.roleid!);
                 if (member instanceof Member && !!srole && !!PermissionUtils.topRole(me) && PermissionUtils.topRole(me)!.position > srole!.position)
-                    await member.removeRole(srole.id,  reason ? reason.replace(/\r?\n|\r/g, '') : undefined);
+                    await member.removeRole(srole.id, reason ? encodeURI(reason) : undefined);
                 break;
         }
         if (punishment.type !== 'role' && punishment.type !== 'unrole') {
