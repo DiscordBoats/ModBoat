@@ -1,4 +1,4 @@
-import { Message } from 'eris';
+import { Message, TextChannel } from 'eris';
 import Client from '../structures/Client';
 import Event from '../structures/Event';
 
@@ -8,7 +8,9 @@ export default class MessageReceivedEvent extends Event {
     }
 
     async emit(m: Message) {
-        this.client.manager.service.handle(m);
-        this.client.autoModService.handle(m);
+        if (m.channel.type == 0) {
+            this.client.manager.service.handle(m);
+            this.client.autoModService.handle(m);
+        }
     }
 }
