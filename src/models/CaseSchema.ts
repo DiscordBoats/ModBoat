@@ -8,6 +8,8 @@ export interface CaseModel extends Document {
     victim: string;
     reason: string;
     message: string;
+    soft: boolean;
+    temp: number;
 }
 
 const schema = new Schema<CaseModel>({
@@ -25,6 +27,16 @@ const schema = new Schema<CaseModel>({
     reason: String,
     message: {
         type: String,
+        required: false,
+        default: null
+    },
+    soft: {
+        type: Boolean,
+        required: false,
+        default: null
+    },
+    temp: {
+        type: Number,
         required: false,
         default: null
     }

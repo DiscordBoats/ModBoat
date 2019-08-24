@@ -1,5 +1,6 @@
 import { CaseSettingBase as Base } from './SettingsBase';
 import model, { CaseModel } from '../../models/CaseSchema';
+import { PunishmentOptions } from '../managers/PunishmentManager';
 
 export default class CaseSettings implements Base<CaseModel> {
     
@@ -11,7 +12,7 @@ export default class CaseSettings implements Base<CaseModel> {
         return document;
     }
 
-    async create(guild: string, moderator: string, type: string, user: string, reason?: string) {
+    async create(guild: string, moderator: string, type: string, user: string, options: PunishmentOptions, reason?: string) {
         const newest = await this.model.find({guild}).sort('-id').exec();
         const query = new this.model({
             guild,
@@ -19,7 +20,9 @@ export default class CaseSettings implements Base<CaseModel> {
             type,
             victim: user,
             reason,
-            id: !!newest[0] ? newest[0].id + 1 : 1
+            id: !!newest[0] ? newest[0].id + 1 : 1,
+            temp: options.temp,
+            soft: options.soft
         });
         query.save();
         return query;

@@ -238,7 +238,7 @@ export default class PunishmentManager {
         const modlog = member.guild.channels.get(settings!.modlog) as TextChannel;
         if (!!modlog && modlog!.permissionsOf(this.client.user.id).has('sendMessages') && modlog!.permissionsOf(this.client.user.id).has('embedLinks')) {
             const action = this.determineType(punishment.type);
-            const c = await this.client.cases.create(member.guild.id, punishment.options.moderator.id, punishment.type, member.id, reason);
+            const c = await this.client.cases.create(member.guild.id, punishment.options.moderator.id, punishment.type, member.id, punishment.options, reason);
             const message = await modlog.createMessage({
                 embed: new EmbedBuilder()
                     .setTitle( `Case #${c.id} **|** ${member.username} has been ${punishment.type + action.suffix}!`)
@@ -252,7 +252,7 @@ export default class PunishmentManager {
             });
             await this.client.cases.update(member.guild.id, c.id, {message: message.id}, (e) => {
                 if (!!e)
-                    this.client.logger.error(`Couldn't update the case: ${e}`)
+                    this.client.logger.log('error', `Couldn't update the case: ${e}`)
             });
         }
     }
@@ -267,7 +267,7 @@ export default class PunishmentManager {
                 .setDescription(stripIndents`
                     **User**: ${member.username}#${member.discriminator} (ID: ${member.id})
                     **Moderator**: ${moderator.username}#${moderator.discriminator} (ID: ${moderator.id})
-                    **Reason**: ${_case.reason}
+                    **Reason**: ${_case.reason}${ !!_case.soft ? '\n**Type**: Soft Ban': ''}${ !_case.soft && !!_case.temp ? `\n**Time**: ${ms(_case.temp, {long: true})}` : ''}
                 `)
                 .setColor(action.action)
                 .build()
