@@ -19,20 +19,11 @@ export default class SettingsCommand extends Command {
     async run(ctx: Context) {
         const subcommand = ctx.args.get(0);
         switch (subcommand) {
-            case 'set': {
-                this.set(ctx);
-            } break;
-
-            case 'reset': {
-                this.reset(ctx);
-            } break;
-
+            case 'set': this.set(ctx); break;
+            case 'reset': this.reset(ctx); break;
             case 'view': return this.view(ctx);
-
             case 'add': return this.add(ctx);
-
             case 'remove': return this.remove(ctx);
-
             default: {
                 return ctx.send('Missing the `subcommand` argument. (`set` | `reset` | `view` | `add` | `remove`)');
             }
@@ -45,20 +36,20 @@ export default class SettingsCommand extends Command {
             return ctx.send('Amount of warnings is required, needs to between 1 to 5');
         const punishment = ctx.args.get(2);
         if (!['ban', 'mute', 'unmute', 'kick', 'role', 'unrole'].includes(punishment))
-            return ctx.send('A punishment is required and it needs to be of the following: ' + ['ban', 'mute', 'unmute', 'kick', 'role', 'unrole'].join(', '))
+            return ctx.send('A punishment is required and it needs to be of the following: ' + ['ban', 'mute', 'unmute', 'kick', 'role', 'unrole'].join(', '));
         const temp = ctx.flags.get('time');
         if (!!temp && (typeof temp === 'boolean' || (typeof temp === 'string' && (!ms(temp as string) || ms(temp as string) < 1000))))
-            return ctx.send('The time flag needs to be a correct time expression: can be 0.5h or 30m or 0.5 hours or 30 minutes or the amount in milliseconds. It also needs to be more or equal to one second.')
+            return ctx.send('The time flag needs to be a correct time expression: can be 0.5h or 30m or 0.5 hours or 30 minutes or the amount in milliseconds. It also needs to be more or equal to one second.');
         const soft = !!ctx.flags.get('soft');
         const roleid = ctx.flags.get('roleid');
         if (!roleid && (punishment === 'role' || punishment === 'unrole'))
-            return ctx.send('A role id is a must when the punishment is role or unrole.')
+            return ctx.send('A role id is a must when the punishment is role or unrole.');
 
         if (!!roleid && (typeof roleid === 'boolean' || (typeof roleid === 'string' && (!/^[0-9]+$/.test(roleid) || !ctx.guild.roles.get(roleid)))))
-            return ctx.send('Incorrect role id.')
+            return ctx.send('Incorrect role id.');
         const days = ctx.flags.get('days');
         if (!!days && (typeof days === 'boolean' || (typeof days === 'string' && !/^[0-9]{1,2}$/.test(days))))
-            return ctx.send('Incorrect amount of days. It is the amount of days to delete the messages in when banning.')
+            return ctx.send('Incorrect amount of days. It is the amount of days to delete the messages in when banning.');
 
         this.client.settings.update(ctx.guild.id, {
             $push: {
@@ -74,9 +65,9 @@ export default class SettingsCommand extends Command {
         }, (error, raw) => {
             if (error) return ctx.send('I was unable to add the punishment.');
             if (raw.n) {
-                return ctx.send(`The punishment was successfully added!`)
+                return ctx.send(`The punishment was successfully added!`);
             } else {
-                return ctx.send('We limit the amount of punishments per server to 15. Please remove some of your punishments before further additions.')
+                return ctx.send('We limit the amount of punishments per server to 15. Please remove some of your punishments before further additions.');
             }
         });
         
@@ -88,12 +79,12 @@ export default class SettingsCommand extends Command {
             return ctx.send('The index of the punishment is required, see the index in `x!settings view`.');
         const settings = await ctx.client.settings.get(ctx.guild.id);
         if (!settings) {
-            return ctx.send('There are no punishments!')
+            return ctx.send('There are no punishments!');
         }
         if (Number(index) <= settings!.punishments.length)
             settings!.punishments.splice(Math.round(Number(index))-1, 1);
         settings!.save();
-        return ctx.send('Successfully removed the punishment!')
+        return ctx.send('Successfully removed the punishment!');
     }
 
     async set(ctx: Context) {
@@ -101,7 +92,7 @@ export default class SettingsCommand extends Command {
         switch (setting) {
             case 'modlog': {
                 const channelId = ctx.args.get(2);
-                if (!channelId || !/^[0-9]+$/.test(channelId)) return ctx.send('Please set a valid id!')
+                if (!channelId || !/^[0-9]+$/.test(channelId)) return ctx.send('Please set a valid id!');
                 this.client.settings.update(ctx.guild.id, {
                     $set: {
                         modlog: channelId
@@ -109,7 +100,7 @@ export default class SettingsCommand extends Command {
                 }, (error) => {
                     if (error) return ctx.send('I was unable to set the modlog channel');
                     return ctx.send(`The modlog channel has been set to <#${channelId}>`);
-                })
+                });
                 break;
             }
             case 'prefix': {
@@ -129,7 +120,7 @@ export default class SettingsCommand extends Command {
             }
             case 'mutedrole': {
                 const mutedRole = ctx.args.get(2);
-                if (!mutedRole || !/^[0-9]+$/.test(mutedRole)) return ctx.send('Please set a valid id!')
+                if (!mutedRole || !/^[0-9]+$/.test(mutedRole)) return ctx.send('Please set a valid id!');
                 this.client.settings.update(ctx.guild.id, {
                     $set: {
                         mutedRole
@@ -137,10 +128,27 @@ export default class SettingsCommand extends Command {
                 }, (error) => {
                     if (error) return ctx.send('I was unable to change the role id');
                     return ctx.send(`The role id has been set to \`${mutedRole}\``);
-                })
+                });
                 break;
             }
+            case 'automod.dehoist': {
+                const bool = ctx.args.get(2);
+                let boole = false;
 
+                if (!bool) return ctx.send('Missing the `bool` argument');
+                if (bool === 'true') boole = true;
+                else if (bool === 'false') boole = false;
+                else return ctx.send('Invalid boolean');
+                this.client.settings.update(ctx.guild.id, {
+                    $set: {
+                        'automod.dehoist': boole
+                    }
+                }, (error) => {
+                    if (error) return ctx.send(`Unable to ${boole? 'enable': 'disable'} the automod dehoist feature`);
+                    return ctx.send(`${boole? 'Enabled': 'Disabled'} the automod dehoist feature`);
+                });
+                break;
+            }
             case 'automod.spam': {
                 const bool = ctx.args.get(2);
                 let boole = false;
@@ -157,6 +165,23 @@ export default class SettingsCommand extends Command {
                 }, (error) => {
                     if (error) return ctx.send(`Unable to ${boole? 'enable': 'disable'} the automod spam feature`);
                     return ctx.send(`${boole? 'Enabled': 'Disabled'} the automod spam feature`);
+                });
+            } break;
+            case 'automod.mention': {
+                const bool = ctx.args.get(2);
+                let boole = false;
+
+                if (!bool) return ctx.send('Missing the `bool` argument');
+                if (bool === 'true') boole = true;
+                else if (bool === 'false') boole = false;
+                else return ctx.send('Invalid boolean');
+                this.client.settings.update(ctx.guild.id, { 
+                    $set: {
+                        'automod.mention': boole
+                    }
+                }, (error) => {
+                    if (error) return ctx.send(`Unable to ${boole? 'enable': 'disable'} the automod mention spam feature`);
+                    return ctx.send(`${boole? 'Enabled': 'Disabled'} the automod mention spam feature`);
                 });
             } break;
             case 'automod.raid': {
@@ -223,15 +248,26 @@ export default class SettingsCommand extends Command {
     async reset(ctx: Context) {
         const setting = ctx.args.get(1);
         switch (setting) {
+            case 'punishments': {
+                this.client.settings.update(ctx.guild.id, {
+                    $set: {
+                        punishments: []
+                    }
+                }, (error) => {
+                    if (error) return ctx.send('I was unable to reset the punishments');
+                    return ctx.send('Punishments have been reset!');
+                });
+            }
+            break;
             case 'modlog': {
                 this.client.settings.update(ctx.guild.id, {
                     $set: {
                         modlog: null
                     }
                 }, (error) => {
-                    if (error) return ctx.send('I was unable to disable the modlog')
-                    return ctx.send('Mod-log has been disabled!')
-                })
+                    if (error) return ctx.send('I was unable to disable the modlog');
+                    return ctx.send('Mod-log has been disabled!');
+                });
                 break;
             }
             case 'prefix': {
@@ -257,7 +293,26 @@ export default class SettingsCommand extends Command {
                 });
                 break;
             }
-
+            case 'automod.dehoist': {
+                this.client.settings.update(ctx.guild.id, { 
+                    $set: {
+                        'automod.dehoist': false
+                    }
+                }, (error) => {
+                    if (error) return ctx.send(`Unable to disable the automod dehoist feature`);
+                    return ctx.send(`Disabled the automod dehoist feature`);
+                });
+            } break;
+            case 'automod.mention': {
+                this.client.settings.update(ctx.guild.id, { 
+                    $set: {
+                        'automod.mention': false
+                    }
+                }, (error) => {
+                    if (error) return ctx.send(`Unable to disable the automod mention spam feature`);
+                    return ctx.send(`Disabled the automod mention spam feature`);
+                });
+            } break;
             case 'automod.spam': {
                 this.client.settings.update(ctx.guild.id, { 
                     $set: {
@@ -308,7 +363,7 @@ export default class SettingsCommand extends Command {
                 });
             } break;
             default: {
-                return ctx.send('Invalid disabler. (`prefix` | `automod.spam` | `automod.raid` | `automod.swears` | `automod.invites` | `mutedrole` | `modlog`)');
+                return ctx.send('Invalid disabler. (`prefix` | `automod.spam` | `automod.raid` | `automod.swears` | `automod.invites` | `automod.dehoist` | `automod.mention` | `mutedrole` | `modlog` | `punishments`)');
             }
         }
     }
@@ -324,9 +379,11 @@ export default class SettingsCommand extends Command {
                 [prefix]: ${settings!.prefix}
                 [mutedrole]: ${settings!.mutedRole ? ctx.guild.roles.get(settings!.mutedRole)!.name : 'None'}
                 [modlog]: ${settings!.modlog === null? 'No channel was set.': ctx.guild.channels.get(settings!.modlog)!.name}
+                [automod.dehoist]: ${settings!.automod.dehoist? 'Yes' : 'No'}
+                [automod.mention]: ${settings!.automod.mention? 'Yes' : 'No'}
                 [automod.spam]: ${settings!.automod.spam? 'Yes': 'No'}
                 [automod.invites]: ${settings!.automod.spam? 'Yes': 'No'}
-                [automod.swears]: ${settings!.automod.badwords.wordlist? settings!.automod.badwords.wordlist.join(', ') : 'Disabled'}
+                [automod.swears]: ${settings!.automod.badwords.wordlist.length > 0 ? settings!.automod.badwords.wordlist.join(', ') : 'Disabled'}
                 [automod.raid]: ${settings!.automod.raid? 'Yes': 'No'}
                 [punishments]:
                 ${settings!.punishments.map((p, i) => `${i+1}. warnings: ${p.warnings}, punishment: ${p.type}, special:${!!p.temp ? ` Time: ${ms(p.temp)}` : ''}${!!p.soft ? ` Soft` : ''}${!!p.roleid ? ` Role: ${!!ctx.guild.roles.get(p.roleid) ? ctx.guild.roles.get(p.roleid)!.name: ''}` : ''}`).join('\n')}

@@ -11,7 +11,7 @@ export default class KickCommand extends Command {
         super(client, {
             name: 'kick',
             description: 'Kicks a user from the guild',
-            usage: '<user> [--reason]',
+            usage: '<user> <reason> [--reason]',
             aliases: ['boot'],
             category: 'Moderation',
             guildOnly: true,
@@ -37,8 +37,8 @@ export default class KickCommand extends Command {
         if (!PermissionUtils.above(ctx.me, member))
             return ctx.send('The user is above me in the heirarchy.')
 
-        let reason = (ctx.flags.get('reason') || ctx.flags.get('r'));
-        if (typeof reason === 'boolean') return ctx.send('You will need to specify a reason');
+            let reason = (ctx.flags.get('reason') || ctx.flags.get('r') || ctx.args.has(1) ? ctx.args.slice(1).join(' ') : false);
+            if (reason && typeof reason === 'boolean') return ctx.send('You will need to specify a reason');
 
         const punishment = new Punishment(PunishmentType.Kick, {
             moderator: ctx.sender

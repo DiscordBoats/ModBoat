@@ -30,11 +30,11 @@ export default class AutoModInvite {
      * @param m the message
      */
     async handle(m: Message): Promise<boolean> {
-        const channel = (m.channel as TextChannel)
+        const channel = (m.channel as TextChannel);
         const guild = channel.guild;
         const me = guild.members.get(this.client.user.id)!;
         
-        if (channel.permissionsOf(m.member!.id).has('manageMessages')) // TODO: add permission checks. I will need to figure out those!
+        if (!PermissionUtils.above(me, m.member!) || !channel.permissionsOf(me.id).has('manageMessages') || m.author.bot || channel.permissionsOf(m.author.id).has('manageMessages')) // TODO: add permission checks. I will need to figure out those!
             return false;
 
         if (m.content.match(this.regex)) {

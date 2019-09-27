@@ -11,7 +11,7 @@ export default class UnmuteCommand extends Command {
         super(client, {
             name: 'unmute',
             description: 'Unmutes a user from a guild',
-            usage: '<user> [--reason]',
+            usage: '<user> <reason> [--reason]',
             category: 'Moderation',
             guildOnly: true,
             userpermissions: Constants.Permissions.banMembers,
@@ -33,8 +33,8 @@ export default class UnmuteCommand extends Command {
         if (!PermissionUtils.above(ctx.me, member))
             return ctx.send('The user is above me in the heirarchy.')
 
-        let reason = (ctx.flags.get('reason') || ctx.flags.get('r'));
-        if (typeof reason === 'boolean') return ctx.send('You will need to specify a reason');
+            let reason = (ctx.flags.get('reason') || ctx.flags.get('r') || ctx.args.has(1) ? ctx.args.slice(1).join(' ') : false);
+            if (reason && typeof reason === 'boolean') return ctx.send('You will need to specify a reason');
 
         await this.client.timeouts.cancelTimeout(member.id, ctx.guild, 'unmute');
         const punishment = new Punishment(PunishmentType.Unmute, { moderator: ctx.sender });

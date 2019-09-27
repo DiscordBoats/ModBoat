@@ -11,7 +11,7 @@ export default class UnbanCommand extends Command {
         super(client, {
             name: 'unban',
             description: 'Unbans a user from a guild',
-            usage: '<user> [--reason]',
+            usage: '<user> <reason> [--reason]',
             aliases: ['unbanne'],
             category: 'Moderation',
             guildOnly: true,
@@ -29,8 +29,8 @@ export default class UnbanCommand extends Command {
             return ctx.send('Please type the id or mention the user (<@id>/<@!id>)')
         }
 
-        let reason = (ctx.flags.get('reason') || ctx.flags.get('r'));
-        if (typeof reason === 'boolean') return ctx.send('You will need to specify a reason');
+        let reason = (ctx.flags.get('reason') || ctx.flags.get('r') || ctx.args.has(1) ? ctx.args.slice(1).join(' ') : false);
+        if (reason && typeof reason === 'boolean') return ctx.send('You will need to specify a reason');
 
         await this.client.timeouts.cancelTimeout(id, ctx.guild, 'unban');
         const punishment = new Punishment(PunishmentType.Unban, { moderator: ctx.sender });

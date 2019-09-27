@@ -43,9 +43,9 @@ export default class ArgumentParser {
      * @param start The start of the slicing process
      * @param end The end process
      */
-    slice(arg: number, start?: number, end?: number) {
+    slice(start?: number, end?: number) {
         return this
-            .get(arg)
+            .args
             .slice(start, end);
     }
 }

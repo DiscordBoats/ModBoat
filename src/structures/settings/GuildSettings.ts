@@ -1,6 +1,5 @@
 import model, { GuildModel } from '../../models/GuildSchema';
 import { SettingsBase as Base } from './SettingsBase';
-import Warning from './Warning';
 
 export default class GuildSettings implements Base<GuildModel> {
     public client: any;
@@ -30,9 +29,9 @@ export default class GuildSettings implements Base<GuildModel> {
     }
 
     update(id: string, doc: { [x: string]: any }, cb: (error: any, raw: any) => void) {
-        const search = { guildID: id }
+        const search = { guildID: id };
         if (!!doc.$push) {
-            search['punishments'] = { $not: { $size: 15 }}
+            search['punishments'] = { $not: { $size: 15 }};
         }
         return this.model.updateOne(search, doc, cb);
     }
