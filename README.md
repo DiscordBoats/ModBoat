@@ -1,8 +1,8 @@
 # ModBoat
 
-This version is no longer maintained: use regular [Nino](https://github.com/auguwu/Nino)
+This version is no longer maintained: use regular [Nino](https://github.com/NinoDiscord/Nino)
 
-A fork of [Nino](https://github.com/auguwu/Nino)
+A fork of [Nino](https://github.com/NinoDiscord/Nino)
 
 Used as a moderation bot in [Discord Boats](https://discord.boats)
 
